@@ -1,7 +1,7 @@
 #include <stdio.h>
 
 // weak symbol
-__attribute__((weak)) int  symbol = 1;
+__attribute__((weak)) int symbol = 1;
 __attribute__((weak)) int extern_func(int a, int b);
 
 int main(void)

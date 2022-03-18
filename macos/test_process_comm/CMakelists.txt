@@ -1,0 +1,13 @@
+cmake_minimum_required(VERSION 3.15.3)
+project(test.elf C)
+SET(CMAKE_BUILD_TYPE "Debug")
+MESSAGE(STATUS "operation system is ${CMAKE_SYSTEM}")
+set(CMAKE_C_STANDARD 99)
+#AUX_SOURCE_DIRECTORY(./ DIR_SRCS)
+set(MAIN_SRC_PATH test_process_new.c)
+set(TEST_SRC_PATH helper_process_long_loop.c)
+include_directories(./)
+link_libraries()
+
+add_executable(${PROJECT_NAME} ${MAIN_SRC_PATH})
+add_executable("helper_process_long_loop.elf" ${TEST_SRC_PATH})
