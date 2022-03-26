@@ -121,6 +121,50 @@ exit:
     return ret;
 }
 
+int test_pipe_rw_fork_dup()
+{
+    int ret = 0;
+    int data_process = 0;
+    int file_pipes[2];
+    const char some_data[] = "hello world";
+    char buffer[BUFSIZ + 1];
+    pid_t pid = 0;
+    memset(buffer, '\0', sizeof buffer);
+
+    ret = pipe(file_pipes);
+    if (ret != 0) {
+        debug_log("pipe failed, ret = %d\n", ret);
+        goto exit;
+    }
+
+    pid = fork();
+    if (pid == -1) {
+        debug_log("fork failed, ret = %d\n", ret);
+        goto exit;
+    }
+    // child process
+    else if (pid == 0) {
+        // close STDIN
+        close(0);
+        // dup pipes[0] -> STDIN_FILENO
+        dup(file_pipes[0]);
+        close(file_pipes[0]);
+        close(file_pipes[1]);
+        execlp("od", "od", "-c", (char*) 0);
+        debug_log("child wrote the bytes\n");
+    }
+    // parent process
+    else {
+        close(file_pipes[0]);
+        data_process = write(file_pipes[1], some_data, strlen(some_data));
+        close(file_pipes[1]);
+        debug_log("parent write %d bytes: %s\n", data_process, some_data);
+    }
+
+exit:
+    return ret;
+}
+
 int test_pipe_rw_exec()
 {
     int ret = 0;
@@ -166,6 +210,7 @@ int main(void)
     //test_popen_write();
     //test_pipe_rw();
     //test_pipe_rw_fork();
-    test_pipe_rw_exec();
+    test_pipe_rw_fork_dup();
+    //test_pipe_rw_exec();
     return 0;
 }
