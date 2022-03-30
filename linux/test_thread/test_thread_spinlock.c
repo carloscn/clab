@@ -5,6 +5,7 @@
 #include <pthread.h>
 #include <string.h>
 #include <errno.h>
+#include <signal.h>
 
 #define debug_log printf("%s:%s:%d--",__FILE__, __FUNCTION__, __LINE__);printf
 
@@ -90,31 +91,72 @@ exit:
 
 
 pthread_spinlock_t lock;
+pthread_spinlock_t lock_live;
 
 static void *test2_handler(void *arg)
 {
     pthread_spin_lock(&lock);
     debug_log("t2 running...\n");
     pthread_exit("exit performance test");
+}
 
+
+static volatile int ctrl_c_flag = 0;
+
+static void *test3_handler(void *arg)
+{
+    static int count = 999;
+    while(1) {
+        pthread_spin_lock(&lock_live);
+        debug_log("t3 locked\n");
+        debug_log("t3 running %d times...\n", count);
+        sleep(1);
+        debug_log("t3 unlocked\n");
+        pthread_spin_unlock(&lock_live);
+        if (ctrl_c_flag == 1) {
+            goto h_exit;
+        }
+    }
+h_exit:
+    pthread_exit("exit performance test");
+}
+
+static void ctrl_c_handler(int sig)
+{
+    (void)sig;
+    ctrl_c_flag = 1;
+    debug_log("recv ctrl-c signal\n");
 }
 
 static int test2_spinlock_performance()
 {
     int ret = 0;
-    pthread_t t0;
+    pthread_t t0, t1;
     void *result = NULL;
     pthread_spin_init(&lock, 0);
+    pthread_spin_init(&lock_live, 0);
     pthread_spin_lock(&lock);
+    (void) signal(SIGINT, &ctrl_c_handler);
     ret = pthread_create(&t0, NULL, test2_handler, NULL);
     if (ret != 0) {
-        debug_log("create failed, ret = %d\n", ret);
+        debug_log("create t2 failed, ret = %d\n", ret);
         goto exit;
     }
+    ret = pthread_create(&t1, NULL, test3_handler, NULL);
+    if (ret != 0) {
+        debug_log("create t3 failed, ret = %d\n", ret);
+        goto exit;
+    }
+    debug_log("wait for the t1 thread .....\n");
+    ret = pthread_join(t1, &result);
+    debug_log("t1 done .....\n");
     debug_log("wait for the t0 thread .....\n");
     ret = pthread_join(t0, &result);
+    debug_log("t0 done .....\n");
     pthread_spin_unlock(&lock);
 exit:
+    pthread_spin_destroy(&lock);
+    pthread_spin_destroy(&lock_live);
     return ret;
 }
 
