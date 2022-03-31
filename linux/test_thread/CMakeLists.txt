@@ -17,3 +17,4 @@ link_libraries()
 
 add_executable("test_thread_spinlock.elf" ${TEST2_SRC_PATH})
 add_executable("test_thread_cond.elf" test_thread_cond.c)
+add_executable("test_multicore.elf" test_multicore.c)
