@@ -6,7 +6,7 @@
 #include <string.h>
 #include <errno.h>
 
-#define debug_log printf("%s:%s:%d--",__FILE__, __FUNCTION__, __LINE__);printf
+#define debug_log printf("%s:%d--", __FUNCTION__, __LINE__);printf
 
 /*
  * The test content is :
@@ -29,26 +29,25 @@ static void *thread_producer(void* args)
 {
     for ( ; ; ) {
         pthread_mutex_lock(&mutex);
-        common ++;
-        debug_log("thread producer add common is %d \n", common);
+        common += 2;
+        debug_log("thread producer add common is ++++++++++++++++++++++++++%d \n", common);
         debug_log("call pthread_cond_broadcase\n");
-        pthread_cond_signal(&cond);
-        //pthread_cond_broadcast(&cond);
+        //pthread_cond_signal(&cond);
+        pthread_cond_broadcast(&cond);
         pthread_mutex_unlock(&mutex);
         sleep(3);
     }
     pthread_exit("pthread 01: exit");
 }
-
-static void *thread_consumer(void* args)
+static void *thread_consumer_1(void* args)
 {
     for ( ; ; ) {
         pthread_mutex_lock(&mutex);
         debug_log("call pthread_cond_wait\n");
         pthread_cond_wait(&cond, &mutex);
-        debug_log("common --");
+        debug_log("common --\n");
         common --;
-        debug_log("thread consume sub common is %d \n", common);
+        debug_log("thread consume_1 sub common is ----------------------------%d \n", common);
         if (common < 0) {
             debug_log("common is neg, failed\n");
             goto finish;
@@ -59,11 +58,29 @@ finish:
     pthread_exit("pthread 01: exit");
 }
 
+static void *thread_consumer_2(void* args)
+{
+    for ( ; ; ) {
+        pthread_mutex_lock(&mutex);
+        debug_log("call pthread_cond_wait\n");
+        pthread_cond_wait(&cond, &mutex);
+        debug_log("common --\n");
+        common --;
+        debug_log("thread consume_2 sub common is ---------------------------------%d \n", common);
+        if (common < 0) {
+            debug_log("common is neg, failed\n");
+            goto finish;
+        }
+        pthread_mutex_unlock(&mutex);
+    }
+finish:
+    pthread_exit("pthread 01: exit");
+}
 
 static int test1_basic_cond()
 {
     int ret = 0;
-    pthread_t thread01, thread02;
+    pthread_t thread01, thread02, thread03;
     void *thread_result = NULL;
 
     ret = pthread_mutex_init(&mutex, NULL);
@@ -83,7 +100,12 @@ static int test1_basic_cond()
         debug_log("create failed, ret = %d\n", ret);
         goto exit;
     }
-    ret = pthread_create(&thread02, NULL, thread_consumer, NULL);
+    ret = pthread_create(&thread02, NULL, thread_consumer_1, NULL);
+    if (ret != 0) {
+        debug_log("create failed, ret = %d\n", ret);
+        goto exit;
+    }
+    ret = pthread_create(&thread02, NULL, thread_consumer_2, NULL);
     if (ret != 0) {
         debug_log("create failed, ret = %d\n", ret);
         goto exit;
@@ -97,6 +119,11 @@ static int test1_basic_cond()
     debug_log("sub thread msg : %s\n test1 finish\n", (const char *)thread_result);
 
     ret = pthread_join(thread02, &thread_result);
+    if (ret != 0) {
+        debug_log("join failed, ret = %d\n", ret);
+        goto exit;
+    }
+    ret = pthread_join(thread03, &thread_result);
     if (ret != 0) {
         debug_log("join failed, ret = %d\n", ret);
         goto exit;
