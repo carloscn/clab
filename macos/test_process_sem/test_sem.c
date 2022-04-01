@@ -9,6 +9,17 @@
 
 #define debug_log printf("%s:%d--", __FUNCTION__, __LINE__);printf
 
+#if defined(__linux__)
+union semun {                   /* Used in calls to semctl() */
+    int                 val;
+    struct semid_ds *   buf;
+    unsigned short *    array;
+#if defined(__linux__)
+    struct seminfo *    __buf;
+#endif
+};
+#endif
+
 static int set_semvalue(int sem_id)
 {
     int ret = 0;
