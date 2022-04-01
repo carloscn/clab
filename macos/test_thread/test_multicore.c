@@ -1,0 +1,1 @@
+../../linux/test_thread/test_multicore.c
