@@ -14,3 +14,5 @@ set(CMAKE_C_FLAGS
 add_executable("test_sem.elf" ${MAIN_SRC_PATH})
 add_executable("test_shm_1.elf" test_shm_1.c)
 add_executable("test_shm_2.elf" test_shm_2.c)
+add_executable("test_msg_1.elf" test_msg_1.c)
+add_executable("test_msg_2.elf" test_msg_2.c)
