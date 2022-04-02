@@ -74,7 +74,6 @@ static int sem_v(int sem_id)
     return ret;
 }
 
-
 int main(int argc, char *argv[])
 {
     int i, ret;
