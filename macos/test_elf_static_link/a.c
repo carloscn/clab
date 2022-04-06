@@ -1,5 +1,7 @@
 extern int b_share;
 extern int b_func(int c, int d);
+extern char start_of_text[];
+int bsssss;
 
 int main(void)
 {

@@ -1,0 +1,52 @@
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+*default*        0x0000000000000000 0xffffffffffffffff
+
+Linker script and memory map
+
+LOAD a.o
+LOAD b.o
+
+.text           0x0000000000001000       0x60
+ *(.text)
+ .text          0x0000000000001000       0x34 a.o
+                0x0000000000001000                main
+ .text          0x0000000000001034       0x2c b.o
+                0x0000000000001034                b_func
+                0x0000000000001060                _etext = .
+
+.iplt           0x0000000000001060        0x0
+ .iplt          0x0000000000001060        0x0 a.o
+
+.igot.plt       0x0000000000001060        0x0
+ .igot.plt      0x0000000000001060        0x0 a.o
+
+.rela.dyn       0x0000000000001060        0x0
+ .rela.iplt     0x0000000000001060        0x0 a.o
+
+.mdata          0x0000000000002000        0x4 load address 0x0000000000001060
+                0x0000000000002000                _data = .
+ *(.data)
+ .data          0x0000000000002000        0x0 a.o
+ .data          0x0000000000002000        0x4 b.o
+                0x0000000000002000                b_share
+                0x0000000000002004                _edata = .
+
+.bss            0x0000000000003000        0x8 load address 0x0000000000002060
+                0x0000000000003000                _bstart = .
+ *(.bss)
+ .bss           0x0000000000003000        0x4 a.o
+                0x0000000000003000                bsssss
+ .bss           0x0000000000003004        0x4 b.o
+                0x0000000000003004                bss_value
+ *(COMMON)
+                0x0000000000003008                _bend = .
+OUTPUT(out.bin elf64-littleaarch64)
+LOAD linker stubs
+
+.comment        0x0000000000000000       0x57
+ .comment       0x0000000000000000       0x57 a.o
+                                         0x58 (size before relaxing)
+ .comment       0x0000000000000057       0x58 b.o

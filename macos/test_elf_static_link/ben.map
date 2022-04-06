@@ -1,0 +1,58 @@
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+*default*        0x0000000000000000 0xffffffffffffffff
+
+Linker script and memory map
+
+LOAD a.o
+LOAD b.o
+                0x0000000000080000                . = 0x80000
+                0x0000000000080000                _stext_boot = .
+
+.text.boot
+ *(.text.boot)
+                0x0000000000080000                _etext_boot = .
+
+.text           0x0000000000080000       0x60 load address 0x0000000000090000
+ *(.text)
+ .text          0x0000000000080000       0x34 a.o
+                0x0000000000080000                main
+ .text          0x0000000000080034       0x2c b.o
+                0x0000000000080034                b_func
+
+.iplt           0x0000000000080060        0x0 load address 0x0000000000090060
+ .iplt          0x0000000000080060        0x0 a.o
+
+.rela.dyn       0x0000000000080060        0x0 load address 0x0000000000090060
+ .rela.iplt     0x0000000000080060        0x0 a.o
+
+.rodata
+ *(.rodata)
+
+.data           0x0000000000080060        0x4 load address 0x0000000000090060
+ *(.data)
+ .data          0x0000000000080060        0x0 a.o
+ .data          0x0000000000080060        0x4 b.o
+                0x0000000000080060                b_share
+
+.igot.plt       0x0000000000080068        0x0 load address 0x0000000000090068
+ .igot.plt      0x0000000000080068        0x0 a.o
+                0x0000000000080068                . = ALIGN (0x8)
+                0x0000000000080068                bss_begin = .
+
+.bss            0x0000000000080068        0x8 load address 0x0000000000090068
+ *(.bss*)
+ .bss           0x0000000000080068        0x4 a.o
+                0x0000000000080068                bsssss
+ .bss           0x000000000008006c        0x4 b.o
+                0x000000000008006c                bss_value
+                0x0000000000080070                bss_end = .
+OUTPUT(out.bin elf64-littleaarch64)
+LOAD linker stubs
+
+.comment        0x0000000000000000       0x57
+ .comment       0x0000000000000000       0x57 a.o
+                                         0x58 (size before relaxing)
+ .comment       0x0000000000000057       0x58 b.o
