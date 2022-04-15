@@ -1,0 +1,8 @@
+VERS_1.1 {
+    global:
+        prov_lib_init;
+        prov_lib_do;
+        prov_lib_cleanup;
+    local:
+        *;
+}
