@@ -1,0 +1,40 @@
+
+libprov.so:	file format mach-o 64-bit x86-64
+
+SYMBOL TABLE:
+0000000000003ec0 l     F __TEXT,__text ___GLOBAL_init_10
+0000000000000000      d  *UND* /Users/carlos/workspace/work/clab/macos/test_share_lib/
+0000000000000000      d  *UND* libprov.c
+000000006259260e      d  *UND* /var/folders/61/sd9n1bls6vl44np1pt1yn8lm0000gn/T/libprov-a1ee88.o
+0000000000003cc0      d  *UND* 
+0000000000003cc0      d  *UND* _prov_lib_init
+00000000000000a0      d  *UND* 
+00000000000000a0      d  *UND* 
+0000000000003d60      d  *UND* 
+0000000000003d60      d  *UND* _prov_lib_do
+00000000000000a0      d  *UND* 
+00000000000000a0      d  *UND* 
+0000000000003e00      d  *UND* 
+0000000000003e00      d  *UND* _prov_lib_cleanup
+0000000000000040      d  *UND* 
+0000000000000040      d  *UND* 
+0000000000003e40      d  *UND* 
+0000000000003e40      d  *UND* _prov_lib_init_auto
+0000000000000040      d  *UND* 
+0000000000000040      d  *UND* 
+0000000000003e80      d  *UND* 
+0000000000003e80      d  *UND* _prov_lib_cleanup_auto
+0000000000000035      d  *UND* 
+0000000000000035      d  *UND* 
+0000000000003ec0      d  *UND* 
+0000000000003ec0      d  *UND* ___GLOBAL_init_10
+000000000000001d      d  *UND* 
+000000000000001d      d  *UND* 
+0000000000000000      d  *UND* 
+0000000000003e00 g     F __TEXT,__text _prov_lib_cleanup
+0000000000003e80 g     F __TEXT,__text _prov_lib_cleanup_auto
+0000000000003d60 g     F __TEXT,__text _prov_lib_do
+0000000000003cc0 g     F __TEXT,__text _prov_lib_init
+0000000000003e40 g     F __TEXT,__text _prov_lib_init_auto
+0000000000000000         *UND* ___cxa_atexit
+0000000000000000         *UND* _printf
