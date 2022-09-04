@@ -1,24 +1,21 @@
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <malloc.h>
 
+int main() {
+  printf("使用cat /proc/%d/maps查看内存分配\n", getpid());
 
-int main(void)
-{
-    size_t i = 0;
-    char *s = NULL;
-    char *p = NULL;
-    while(1) {
-        p = (char*) malloc(1024);
-        memset(p, 0xff, 1029);
-        s = (char *)malloc(1024);
-        if (NULL == s) {
-            printf("malloc failed\n");
-        }
-        if (p != NULL)
-            free(p);
-        if (s != NULL)
-            free(s);
-    }
-    return 0;
+  //申请1字节的内存
+  void *addr = malloc(1);
+  printf("此1字节的内存起始地址：%p\n", addr);
+  printf("使用cat /proc/%d/maps查看内存分配\n", getpid());
+
+  //将程序阻塞，当输入任意字符时才往下执行
+  getchar();
+
+  //释放内存
+  free(addr);
+  printf("释放了1字节的内存，但heap堆并不会释放\n");
+
+  getchar();
+  return 0;
 }
