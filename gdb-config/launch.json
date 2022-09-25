@@ -1,0 +1,27 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            // 自定义，名字，看起来有意义就行，用来给你选的；
+            "name": "armv7-debug",
+            // 调试的是 go 程序
+            "type": "cppdbg",
+            // attach 进程的方式
+            "request": "launch", // launch
+            // auto、debug、remote
+            "mode": "debug",
+            // 调试的程序,当运行单个文件时{workspaceFolder}可改为{file}
+            "program": "${workspaceFolder}/linux/test_pid/test_pid.elf", // ${workspaceFolder}/filename or ${file} or ${workspaceFolder}
+            "cwd": "${workspaceFolder}/linux/test_pid/",
+            "miDebuggerPath": "/opt/cross-compile/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabihf/bin/arm-linux-gnueabihf-gdb",
+            "miDebuggerServerAddress": "192.168.31.210:2001",
+            "env": {
+                // "REDIS_ADDR": "localhost:1270",
+                // "REDIS_PWD": ""
+            },
+            "args": [
+                "-f", "server2.json"
+            ]
+        },
+    ]
+}
