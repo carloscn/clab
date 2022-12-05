@@ -1,6 +1,5 @@
 .vscode
 *.o
-Makefile
 CMakeFiles
 CMakeCache*
 cmake_install*
