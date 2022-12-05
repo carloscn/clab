@@ -1,0 +1,26 @@
+# make -o to dump the VAL
+
+OBJ = add.o div.o sub.o mul.o main.o
+TARGET = main
+
+$(TARGET).elf : $(OBJ)
+	gcc $(OBJ) -o $@
+
+main.o : main.c
+	gcc -c $^ -o $@
+
+add.o : add.c
+	gcc -c $^ -o $@
+
+div.o : div.c
+	gcc -c $^ -o $@
+
+sub.o : sub.c
+	gcc -c $^ -o $@
+
+mul.o : mul.c
+	gcc -c $^ -o $@
+
+clean :
+	@rm -rf $(OBJ) $(TARGET).elf
+	@echo "make clean finish"

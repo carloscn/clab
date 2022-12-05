@@ -1,0 +1,19 @@
+# make -o to dump the VAL
+
+.PHONY: clean hello
+
+OBJ = add.o div.o sub.o mul.o main.o
+TARGET = main
+
+$(TARGET).elf : $(OBJ)
+	$(CC) $(OBJ) -o $@
+
+%.o : %.c
+	$(CC) -c $^ -o $@
+
+hello :
+	@echo "hello test"
+
+clean :
+	@$(RM) $(OBJ) $(TARGET).elf
+	@echo "make clean finish"

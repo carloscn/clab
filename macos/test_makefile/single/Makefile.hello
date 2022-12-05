@@ -1,0 +1,21 @@
+# make a
+# make b
+# make hello
+# make
+# make -w
+# make -n
+# make -s
+# make -p
+# make clean
+
+a:
+	@echo "a"
+
+b:
+	@echo "b"
+
+hello:
+	@echo "hello world!"
+
+clean:
+	@rm -rf *.out

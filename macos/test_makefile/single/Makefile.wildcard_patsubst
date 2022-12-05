@@ -1,0 +1,23 @@
+# make -o to dump the VAL
+
+.PHONY: clean hello
+
+OBJ = $(patsubst %.c, %.o, $(wildcard *.c))
+TARGET = main
+
+$(TARGET).elf : $(OBJ)
+	$(CC) $(OBJ) -o $@
+
+%.o : %.c
+	$(CC) -c $^ -o $@
+
+hello :
+	@echo "hello test"
+
+show:
+	@echo $(wildcard *.c)
+	@echo $(patsubst %.c, %.o, $(wildcard *.c))
+
+clean :
+	@$(RM) $(OBJ) $(TARGET).elf
+	@echo "make clean finish"

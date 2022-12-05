@@ -15,8 +15,7 @@ void atexit_func(void) {
     printf("atexit !\n");
 }
 
-int main(void)
-{
+int main(void) {
     atexit(&atexit_func);
     printf("main will return\n");
     return 0;
