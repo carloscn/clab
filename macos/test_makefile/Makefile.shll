@@ -1,0 +1,15 @@
+
+.PHONY: clean
+
+file = test.txt
+A := $(shell ls)
+B := $(shell pwd)
+C := $(shell (if [ ! -f $(file) ];then touch $(file); fi;))
+
+show:
+	echo $(A)
+	echo $(B)
+	echo $(C)
+
+clean:
+	$(RM) $(file)
