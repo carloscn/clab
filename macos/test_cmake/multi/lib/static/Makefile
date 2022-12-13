@@ -5,7 +5,7 @@ TARGET = libmod.a
 OBJ = mod.o
 
 $(TARGET): $(OBJ)
-	$(AR) -rcs $@ -o $^
+	$(AR) -r $@ -o $^
 
 mod.o:
 	$(CC) -c -o $@ $(SOURCE)
