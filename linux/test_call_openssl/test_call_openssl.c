@@ -26,7 +26,7 @@ static const char test_array[256] = {
 };
 #define CMD_MAX_BYTES (2048U)
 static char __cmd[CMD_MAX_BYTES] = { 0 };
-// openssl genrsa -out pri.pem 512
+// openssl genrsa -out pri.pem 4096
 // openssl rsa -in pri.pem -pubout > pub.pem
 #define PRIVATE_KEY "pri.pem"
 #define PUBLIC_KEY "pub.pem"
