@@ -13,8 +13,6 @@
 #include <termios.h>
 #include <unistd.h>
 
-#define OPENSSL
-
 #if defined(MBEDTLS)
 #include "mbedtls/gcm.h"
 #endif /* MBEDTLS */
@@ -25,6 +23,10 @@
 #define OPSSL_OK 1
 #define OPSSL_FAIL -1
 #endif /* OPENSSL */
+
+#if !defined(OPENSSL) && !defined(MBEDTLS)
+#error "Please compile the file using the -DOPENSSL or -DMBEDTLS"
+#endif /* !OPENSSL && !MBEDTLS */
 
 #define DEBUG 1
 #define ENCRYPT_ENABLE 0
@@ -219,6 +221,7 @@ static int32_t devmem_read_luks_iv(intptr_t iv_addr, uint8_t *iv_out,
     utils_printf("[ERR] read LUKS_IV error on 0x%lX!\n", (intptr_t)iv_addr);
     goto finish;
   }
+
 #if DEBUG
   utils_printf("The IV is : \n");
   devmem_print_hex(iv_out, iv_bytes);
@@ -243,6 +246,9 @@ static int32_t devmem_aes_encrypt(uint8_t *buffer_io, size_t *io_len,
   UTILS_CHECK_PTR(io_len);
 
   len = *io_len;
+  if (0 == len) {
+    goto finish;
+  }
 
   mbedtls_gcm_init(&aes);
 
@@ -315,6 +321,9 @@ static int32_t devmem_aes_decrypt(uint8_t *buffer_io, size_t *io_len,
   UTILS_CHECK_PTR(io_len);
 
   len = *io_len;
+  if (0 == len) {
+    goto finish;
+  }
   memcpy(tag, buffer_io + LUKS_PASS_SIZE_BIN, GCM_TAG_SIZE);
   len -= GCM_TAG_SIZE;
 
@@ -386,7 +395,9 @@ static int32_t devmem_aes_encrypt(uint8_t *buffer_io, size_t *io_len,
   UTILS_CHECK_PTR(io_len);
 
   len = *io_len;
-
+  if (0 == len) {
+    goto finish;
+  }
 #if DEBUG
   utils_printf("AES GCM Encrypt:\n");
   utils_printf("Plaintext:\n");
@@ -483,6 +494,9 @@ static int32_t devmem_aes_decrypt(uint8_t *buffer_io, size_t *io_len,
   UTILS_CHECK_PTR(io_len);
 
   len = *io_len;
+  if (0 == len) {
+    goto finish;
+  }
   memcpy(tag, buffer_io + LUKS_PASS_SIZE_BIN, GCM_TAG_SIZE);
   len -= GCM_TAG_SIZE;
 
@@ -607,6 +621,7 @@ static int32_t utils_convert_str_to_be(const char *str, uint8_t *buf,
     c_len += 2;
   }
   ret = 0;
+
 finish:
   return ret;
 }
@@ -656,6 +671,10 @@ static int32_t devmem_write_luks_key(uint8_t *buffer_io, size_t len) {
   int32_t ret = 0;
   size_t write_len = 0;
   FILE *p = NULL;
+
+  if (0 == len) {
+    goto finish;
+  }
 
   UTILS_CHECK_PTR(buffer_io);
 
@@ -759,7 +778,7 @@ int main(int argc, char **argv) {
     goto finish;
   }
 #endif /* ENCRYPT_ENABLE */
-  utils_printf("call crypto lib gcm256 decrypt:");
+  utils_printf("call crypto lib gcm256 decrypt:\n");
   ret = devmem_aes_decrypt(decrypted_buffer, &len, luks_key, luks_iv);
   if (ret != 0) {
     utils_printf("[ERR] devmem_gcm_decrypt\n");
