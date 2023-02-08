@@ -56,6 +56,34 @@ fn array_trans_reference_array(arr: &mut [u32;6]) {
     arr[1] = 999; // will change the original array.
 }
 
+fn array_sort(arr:&mut [u32], len:&mut usize) -> i32
+{
+    let mut ret:i32 = 0;
+    let mut sz:usize = arr.len();
+    let mut i:usize = 0;
+    let mut j:usize = 0;
+    let mut t:u32 = 0;
+
+    if *len == 0 {
+        ret = -1;
+        return ret;
+    }
+
+    while i < sz {
+        while j < sz - i {
+            if arr[i] < arr[j] {
+                t = arr[i];
+                arr[i] = arr[j];
+                arr[j] = t;
+            }
+            j += 1;
+        }
+        i += 1;
+    }
+
+    return ret;
+}
+
 fn array_type() {
     let mut array_1 : [u32; 6] = [1,2,3,4,5,6];
     let array_2 = ["hello", "myname", "is", "carlos"];
@@ -268,6 +296,33 @@ fn string_type() {
     }
 }
 
+fn test_str(st: &str) {
+    println!("input str is {}", st);
+}
+
+fn test_string(st: String) {
+    println!("input string is {st}");
+}
+
+fn test_return_str(st: &mut str) -> String
+{
+    // create string on the heap
+    let mut add_str : String = String::from(" add some char");
+    add_str = st.to_owned() + &add_str;
+    return add_str;
+}
+
+fn string_and_str() {
+    test_str("my name is carlos!");
+    test_string("my name is Carlos!".to_string());
+
+    let mut a: String = "my name is carlos!".to_string();
+    let mut b: String;
+    b = test_return_str(&mut a);
+    println!("the b is {b}");
+
+}
+
 fn main() {
     reference_type();
     box_type();
@@ -275,5 +330,6 @@ fn main() {
     vector_type();
     slice_type();
     string_type();
+    string_and_str();
     println!("Hello, world!");
 }
