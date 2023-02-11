@@ -45,7 +45,7 @@ fn test_if_match() {
         0 => println!("OK"),
         1 => println!("name!"),
         7 => println!("hello!"),
-        _ => println!("no value")        
+        _ => println!("no value")
     }
 
     if let k = println!("hello") {
@@ -214,7 +214,7 @@ fn test_while()
 
         // Increment counter
         n += 1;
-    } 
+    }
 }
 
 fn test_match_tuples()
