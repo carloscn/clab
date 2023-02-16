@@ -15,6 +15,7 @@ fn main() {
         username:String::from("horse_ebooks"),
         content:String::from("fdilfghsidlhfsidhnfisdhgisodfhbnvusbguiwef"),
         reply:false,
+        
         retweet:false,
     };
 
