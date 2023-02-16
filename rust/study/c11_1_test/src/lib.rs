@@ -59,6 +59,7 @@ mod tests {
         Guess::new(5);
     }
 
+    
     #[test]
     fn test_use_result() -> Result<(), String>{
         if 2 + 5 == 4 {
@@ -66,6 +67,13 @@ mod tests {
         } else {
             Err(String::from("two plus does not equel four!"))
         }
+    }
+
+    // cargo test -- --ignored
+    #[test]
+    #[ignore]
+    fn test_ignore() {
+        assert!(0 != 1);
     }
 
 }
