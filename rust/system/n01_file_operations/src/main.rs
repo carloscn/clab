@@ -174,6 +174,26 @@ mod utils_fo {
 
         return rc;
     }
+
+    pub fn read_file_ascii(file_name:&str) -> Result<String, io::Error>
+    {
+        let rc:Result<String, io::Error>;
+
+        let mut ctx = match File::open(file_name) {
+            Ok(file) => file,
+            Err(err) => {
+                println!("file open error! {:?}", err);
+                return Err(err);
+            },
+        };
+
+        let mut read_str:String = String::new();
+        ctx.read_to_string(&mut read_str).unwrap();
+
+        rc = Ok(read_str);
+
+        return rc;
+    }
 }
 
 mod utils_dir {
@@ -207,7 +227,7 @@ fn main() {
 
     // let mut rc = utils_fo::write_file_ascii(&"hello.txt".to_string());
 
-    //let mut rc: Result<(), io::Error> = utils_fo::write_file_ascii_append(&"hello.txt".to_string());
+    let mut rc: Result<(), io::Error> = utils_fo::write_file_ascii_append(&"hello.txt".to_string());
 
     let input = vec![1u8, 2,8,9,4,1,2];
     let rc = utils_fo::write_file_bin("hello.bin", &input);
@@ -217,4 +237,7 @@ fn main() {
     });
 
     println!("read result is : {:?}", rc);
+
+    let rc = utils_fo::read_file_ascii("hello.txt").unwrap();
+    println!("read result ascii is {:?}", rc);
 }
