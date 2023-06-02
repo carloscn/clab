@@ -218,6 +218,9 @@ mod utils_fo {
         let mut read_str:String = String::new();
         ctx.read_to_string(&mut read_str).unwrap();
 
+        let mut buffer:[u8;128] = [0; 128];
+        ctx.read(&mut buffer)?;
+
         rc = Ok(read_str);
 
         return rc;
@@ -328,6 +331,36 @@ mod utils_dir {
     }
 }
 
+mod tools {
+    use std::io;
+    use std::io::prelude::*;
+
+    pub fn grep(target: &str) -> io::Result<()>
+    {
+        let stdin = io::stdin();
+        for line_result in stdin.lock().lines() {
+            let line = line_result?;
+            if line.contains(target) {
+                println!("{}", line);
+            }
+        }
+        return Ok(());
+    }
+
+    pub fn grep_in_disk<R>(target: &str, reader: R) -> io::Result<()>
+        where R : BufRead
+    {
+        for line_result in reader.lines() {
+            let line = line_result?;
+            if line.contains(target) {
+                println!("{}", line);
+            }
+        }
+        return Ok(());
+    }
+
+}
+
 fn main() {
 
     // let mut rc = utils_fo::write_file_ascii(&"hello.txt".to_string());
@@ -351,7 +384,10 @@ fn main() {
 #[cfg(test)]
 mod tests {
 
+    use std::io::BufRead;
+
     use crate::utils_fo::drop_file;
+    use crate::tools;
 
     use super::*;
 
@@ -361,7 +397,6 @@ mod tests {
         let ret = utils_fo::read_file_ascii("hello.txt").unwrap();
         drop_file("hello.txt");
         assert_eq!(ret, "hellow".to_string());
-
     }
 
     #[test]
@@ -379,5 +414,17 @@ mod tests {
         let rc = utils_fo::write_file_without_append("hello.bin", &input);
         let rc = utils_fo::read_file_binary("hello.bin").unwrap();
         assert_eq!(rc, input);
+    }
+
+    use std::io::BufReader;
+    use std::fs::File;
+    #[test]
+    fn tool_test_grep() {
+        let stdin = io::stdin();
+        tools::grep_in_disk("hello", stdin.lock());
+
+        let f = File::open("hello.txt");
+        tools::grep_in_disk("hello", BufReader::new(f));
+
     }
 }
